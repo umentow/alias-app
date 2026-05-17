@@ -645,6 +645,18 @@ select option { background: #1a0f35; color: var(--text); }
         </div>
       </div>
 
+
+      <!-- Export / Import -->
+      <div style="padding:6px 16px 20px;display:flex;gap:6px;justify-content:flex-end;">
+        <button class="btn btn-ghost" onclick="exportData()" style="height:26px;padding:0 12px;font-size:11px;width:auto;">
+          ↑ Export
+        </button>
+        <button class="btn btn-ghost" onclick="document.getElementById('import-input').click()" style="height:26px;padding:0 12px;font-size:11px;width:auto;">
+          ↓ Import
+        </button>
+        <input type="file" id="import-input" accept=".json" style="display:none;" onchange="importData(event)"/>
+      </div>
+
     </div><!-- /vault -->
 
     <!-- ── GENERATED ── -->
@@ -1012,6 +1024,57 @@ function showToast(msg) {
   t.className = 'toast'; t.textContent = msg;
   document.body.appendChild(t);
   setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, 2000);
+}
+
+// ── Export / Import ───────────────────────────────────────────────────────────
+function exportData() {
+  const data = {
+    accounts: state.accounts,
+    vault: state.vault,
+    baseEmail: state.baseEmail,
+    selectedApps: selectedApps,
+    exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'alias-pro-backup.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ Export successful!');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.accounts) { state.accounts = data.accounts; await window.store.set('gm_accounts', state.accounts); }
+      if (data.vault)    { state.vault    = data.vault;    await window.store.set('gm_vault', state.vault); }
+      if (data.baseEmail){ state.baseEmail = data.baseEmail; await window.store.set('gm_base', state.baseEmail); if(document.getElementById('gmail-input')) document.getElementById('gmail-input').value = state.baseEmail; }
+      if (data.selectedApps) {
+        selectedApps = data.selectedApps;
+        await window.store.set('gm_selected_apps', selectedApps);
+        selectedApps.forEach(app => {
+          const el = document.querySelector('.app-pick-item[data-app="' + app + '"]');
+          if (el) el.classList.add('selected');
+        });
+        if (selectedApps.length) activeAppTab = selectedApps[0];
+        renderAppTabs();
+      }
+      renderVault();
+      renderGenerated();
+      updateMetrics();
+      showToast('✓ Import successful!');
+    } catch(err) {
+      showToast('✗ Invalid file!');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
 }
 </script>
 </body>
