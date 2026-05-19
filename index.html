@@ -247,6 +247,13 @@ select option { background:#1a0f35; color:var(--text); }
 .modal-field-value { flex:1; background:rgba(255,255,255,0.04); border:1px solid var(--glass-b2); border-radius:10px; padding:10px 12px; font-size:13px; color:var(--text); font-family:var(--mono); word-break:break-all; }
 .modal-note { margin-top:14px; padding-top:14px; border-top:1px solid var(--glass-b2); font-size:14px; font-weight:600; color:#c4bfe8; }
 .modal-close-btn { width:100%; margin-top:16px; height:46px; border-radius:10px; border:1px solid var(--glass-b); background:rgba(255,255,255,0.05); color:var(--text-sub); font-family:var(--font); font-size:14px; font-weight:600; cursor:pointer; }
+.modal-field-input { flex:1; background:rgba(139,92,246,0.07); border:1px solid var(--accent); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--text); font-family:var(--mono); outline:none; transition:all .2s; height:auto; }
+.modal-field-input:focus { box-shadow:0 0 0 3px var(--accent-dim); }
+.modal-edit-actions { display:flex; gap:8px; margin-top:20px; padding-top:16px; border-top:1px solid var(--glass-b2); }
+.btn-edit { background:rgba(139,92,246,0.15); border:1px solid var(--accent); color:var(--accent2); }
+.btn-edit:active { background:rgba(139,92,246,0.3); color:#fff; }
+.btn-save { background:linear-gradient(135deg,#059669,var(--green)); color:#fff; box-shadow:0 4px 16px rgba(52,211,153,0.2); }
+.btn-cancel { background:rgba(255,255,255,0.05); border:1px solid var(--glass-b); color:var(--text-sub); }
 
 /* ── Toast ─────────────────────────────────────────────────────────────────── */
 .toast { position:fixed; bottom:calc(20px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); z-index:999; padding:12px 24px; border-radius:30px; background:rgba(139,92,246,0.3); backdrop-filter:blur(20px); border:1px solid var(--accent); font-size:13px; font-weight:600; color:var(--text); box-shadow:0 8px 32px var(--accent-glow); animation:toastIn .3s ease; pointer-events:none; white-space:nowrap; }
@@ -405,6 +412,15 @@ select option { background:#1a0f35; color:var(--text); }
               <option value="discord">Discord</option>
               <option value="instagram">Instagram</option>
               <option value="tiktok">TikTok</option>
+              <option value="twitter">Twitter / X</option>
+              <option value="snapchat">Snapchat</option>
+              <option value="youtube">YouTube</option>
+              <option value="twitch">Twitch</option>
+              <option value="reddit">Reddit</option>
+              <option value="steam">Steam</option>
+              <option value="spotify">Spotify</option>
+              <option value="telegram">Telegram</option>
+              <option value="mullvad">Mullvad</option>
               <option value="other">Other</option>
             </select>
           </div>
@@ -415,11 +431,18 @@ select option { background:#1a0f35; color:var(--text); }
             <input id="v-user" type="text" placeholder="@deinusername"/>
           </div>
 
-          <div class="field-group">
+          <!-- Email field – hidden for Mullvad -->
+          <div class="field-group" id="v-email-group">
             <label>Email Address</label>
             <input id="v-email" type="email" inputmode="email" placeholder="email@gmail.com"/>
           </div>
-          <div class="field-group">
+          <!-- Account Number – only for Mullvad -->
+          <div class="field-group" id="v-acct-group" style="display:none;">
+            <label>Account Number</label>
+            <input id="v-acct" type="text" inputmode="numeric" placeholder="1234 5678 9012 3456" style="font-family:var(--mono);letter-spacing:0.05em;"/>
+          </div>
+          <!-- Password field – hidden for Mullvad -->
+          <div class="field-group" id="v-pass-group">
             <label>Password</label>
             <input id="v-pass" type="password" placeholder="••••••••"/>
           </div>
@@ -453,6 +476,42 @@ select option { background:#1a0f35; color:var(--text); }
           <div class="app-pick-item" data-app="tiktok" onclick="toggleAppPick('tiktok',this)">
             <span class="app-pick-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.28 6.28 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.73a8.21 8.21 0 0 0 4.79 1.52V6.8a4.85 4.85 0 0 1-1.02-.11z"/></svg></span>
             TikTok <span class="app-pick-check">&#10003;</span>
+          </div>
+          <div class="app-pick-item" data-app="twitter" onclick="toggleAppPick('twitter',this)">
+            <span class="app-pick-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="white" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.83L2.25 2.25h6.952l4.26 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span>
+            Twitter / X <span class="app-pick-check">&#10003;</span>
+          </div>
+          <div class="app-pick-item" data-app="snapchat" onclick="toggleAppPick('snapchat',this)">
+            <span class="app-pick-icon"><svg width="19" height="19" viewBox="5 3 14 18" fill="#FFFC00"><path d="M12.166 19.4c-.054.012-.235.04-.342.04-.107 0-.288-.028-.342-.04-1.226-.21-1.945-.93-2.456-1.486l-.18-.196c-.273-.288-.475-.388-.737-.388-.075 0-.18.018-.27.04-.595.13-1.067.244-1.42.244-.323 0-.494-.118-.59-.222-.111-.122-.16-.273-.158-.426 0-.198.13-.32.288-.404.16-.085.4-.155.682-.27.395-.165.825-.354 1.213-.706.514-.467.916-1.082 1.196-1.832.108-.288.022-.455-.066-.535-.072-.07-.18-.117-.298-.16-.058-.022-.115-.042-.16-.062-.303-.12-.63-.296-.83-.547-.143-.18-.18-.34-.116-.476.082-.176.296-.262.534-.165.165.067.317.123.45.123.144 0 .226-.04.247-.052.024-.166.04-.33.04-.52 0-.122-.012-.456-.03-.79-.022-.456-.045-.93-.045-1.156 0-2.39 1.92-3.97 4.36-3.97 2.44 0 4.36 1.58 4.36 3.97 0 .226-.023.7-.045 1.155-.018.335-.03.668-.03.79 0 .19.016.355.04.52.02.013.103.053.247.053.133 0 .285-.057.45-.124.238-.097.452-.011.534.165.064.137.027.297-.117.476-.2.252-.527.428-.83.547-.045.02-.102.04-.16.062-.118.043-.226.09-.298.16-.088.08-.174.247-.066.535.28.75.682 1.365 1.196 1.832.388.352.818.54 1.213.706.282.115.522.185.682.27.158.084.288.205.288.404.002.153-.047.304-.158.426-.096.104-.267.222-.59.222-.353 0-.825-.115-1.42-.244-.09-.022-.195-.04-.27-.04-.262 0-.464.1-.737.388l-.18.196c-.51.555-1.23 1.276-2.456 1.486z"/></svg></span>
+            Snapchat <span class="app-pick-check">&#10003;</span>
+          </div>
+          <div class="app-pick-item" data-app="youtube" onclick="toggleAppPick('youtube',this)">
+            <span class="app-pick-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="#FF0000" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 0 0 .5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 0 0 2.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg></span>
+            YouTube <span class="app-pick-check">&#10003;</span>
+          </div>
+          <div class="app-pick-item" data-app="twitch" onclick="toggleAppPick('twitch',this)">
+            <span class="app-pick-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="#9146FF" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg></span>
+            Twitch <span class="app-pick-check">&#10003;</span>
+          </div>
+          <div class="app-pick-item" data-app="reddit" onclick="toggleAppPick('reddit',this)">
+            <span class="app-pick-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="#FF4500" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg></span>
+            Reddit <span class="app-pick-check">&#10003;</span>
+          </div>
+          <div class="app-pick-item" data-app="steam" onclick="toggleAppPick('steam',this)">
+            <span class="app-pick-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="white" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.495 1.009 2.452-.397.957-1.494 1.41-2.454 1.015zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/></svg></span>
+            Steam <span class="app-pick-check">&#10003;</span>
+          </div>
+          <div class="app-pick-item" data-app="spotify" onclick="toggleAppPick('spotify',this)">
+            <span class="app-pick-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="#1ED760" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></span>
+            Spotify <span class="app-pick-check">&#10003;</span>
+          </div>
+          <div class="app-pick-item" data-app="telegram" onclick="toggleAppPick('telegram',this)">
+            <span class="app-pick-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="#26A5E4" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></span>
+            Telegram <span class="app-pick-check">&#10003;</span>
+          </div>
+          <div class="app-pick-item" data-app="mullvad" onclick="toggleAppPick('mullvad',this)">
+            <span class="app-pick-icon"><img src="data:image/png;base64,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" width="20" height="20" style="margin-right:5px;vertical-align:middle;flex-shrink:0;border-radius:50%;object-fit:cover;object-position:center;"></span>
+            Mullvad <span class="app-pick-check">&#10003;</span>
           </div>
           <div class="app-pick-item" data-app="other" onclick="toggleAppPick('other',this)">
             <span class="app-pick-icon" style="font-size:16px;font-weight:700;color:white;">?</span>
@@ -578,6 +637,13 @@ function updateMetrics() {
 }
 
 // ── E-Mail maskieren ─────────────────────────────────────────────────────────
+function maskAccountNum(acct) {
+  if (!acct) return '';
+  const clean = acct.replace(/\s/g, '');
+  const visible = clean.slice(0, 4);
+  return visible + ' **** **** ****';
+}
+
 function maskEmail(email) {
   if (!email) return '';
   const [name, domain] = email.split('@');
@@ -662,14 +728,23 @@ async function clearGenerated() {
 }
 
 // ── Vault ─────────────────────────────────────────────────────────────────────
-const APP_LABELS = { gmail:'Gmail', discord:'Discord', instagram:'Instagram', tiktok:'TikTok', other:'Other' };
+const APP_LABELS = { gmail:'Gmail', discord:'Discord', instagram:'Instagram', tiktok:'TikTok', twitter:'Twitter / X', snapchat:'Snapchat', youtube:'YouTube', twitch:'Twitch', reddit:'Reddit', steam:'Steam', spotify:'Spotify', telegram:'Telegram', mullvad:'Mullvad', other:'Other' };
 
 const GMAIL_SVG     = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-right:5px;vertical-align:middle;flex-shrink:0;"><rect x="2" y="4" width="20" height="16" rx="2" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><path d="M2 7l10 7 10-7" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round"/></svg>`;
 const TIKTOK_SVG    = `<svg width="13" height="13" viewBox="0 0 24 24" fill="white" style="margin-right:5px;vertical-align:middle;flex-shrink:0;"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.28 6.28 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.73a8.21 8.21 0 0 0 4.79 1.52V6.8a4.85 4.85 0 0 1-1.02-.11z"/></svg>`;
 const DISCORD_SVG   = `<svg width="13" height="13" viewBox="0 0 24 24" fill="#5865F2" style="margin-right:5px;vertical-align:middle;flex-shrink:0;"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.11 18.1.127 18.113a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>`;
 const INSTAGRAM_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" style="margin-right:5px;vertical-align:middle;flex-shrink:0;"><defs><radialGradient id="igT" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect width="24" height="24" rx="5" fill="url(#igT)"/><circle cx="12" cy="12" r="4.5" fill="none" stroke="white" stroke-width="2"/><circle cx="18" cy="6" r="1.2" fill="white"/></svg>`;
 const OTHER_ICON    = `<span style="margin-right:5px;font-weight:700;font-size:11px;">?</span>`;
-const APP_ICONS     = { gmail:GMAIL_SVG, discord:DISCORD_SVG, instagram:INSTAGRAM_SVG, tiktok:TIKTOK_SVG, other:OTHER_ICON };
+const TWITTER_SVG   = `<svg width="14" height="14" viewBox="0 0 24 24" fill="white" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.83L2.25 2.25h6.952l4.26 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`;
+const SNAPCHAT_SVG  = `<svg width="18" height="18" viewBox="5 3 14 18" fill="#FFFC00" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M12.166 19.4c-.054.012-.235.04-.342.04-.107 0-.288-.028-.342-.04-1.226-.21-1.945-.93-2.456-1.486l-.18-.196c-.273-.288-.475-.388-.737-.388-.075 0-.18.018-.27.04-.595.13-1.067.244-1.42.244-.323 0-.494-.118-.59-.222-.111-.122-.16-.273-.158-.426 0-.198.13-.32.288-.404.16-.085.4-.155.682-.27.395-.165.825-.354 1.213-.706.514-.467.916-1.082 1.196-1.832.108-.288.022-.455-.066-.535-.072-.07-.18-.117-.298-.16-.058-.022-.115-.042-.16-.062-.303-.12-.63-.296-.83-.547-.143-.18-.18-.34-.116-.476.082-.176.296-.262.534-.165.165.067.317.123.45.123.144 0 .226-.04.247-.052.024-.166.04-.33.04-.52 0-.122-.012-.456-.03-.79-.022-.456-.045-.93-.045-1.156 0-2.39 1.92-3.97 4.36-3.97 2.44 0 4.36 1.58 4.36 3.97 0 .226-.023.7-.045 1.155-.018.335-.03.668-.03.79 0 .19.016.355.04.52.02.013.103.053.247.053.133 0 .285-.057.45-.124.238-.097.452-.011.534.165.064.137.027.297-.117.476-.2.252-.527.428-.83.547-.045.02-.102.04-.16.062-.118.043-.226.09-.298.16-.088.08-.174.247-.066.535.28.75.682 1.365 1.196 1.832.388.352.818.54 1.213.706.282.115.522.185.682.27.158.084.288.205.288.404.002.153-.047.304-.158.426-.096.104-.267.222-.59.222-.353 0-.825-.115-1.42-.244-.09-.022-.195-.04-.27-.04-.262 0-.464.1-.737.388l-.18.196c-.51.555-1.23 1.276-2.456 1.486z"/></svg>`;
+const YOUTUBE_SVG   = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#FF0000" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 0 0 .5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 0 0 2.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>`;
+const TWITCH_SVG    = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#9146FF" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>`;
+const REDDIT_SVG    = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#FF4500" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>`;
+const STEAM_SVG     = `<svg width="14" height="14" viewBox="0 0 24 24" fill="white" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.495 1.009 2.452-.397.957-1.494 1.41-2.454 1.015zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/></svg>`;
+const SPOTIFY_SVG   = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#1ED760" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>`;
+const TELEGRAM_SVG  = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#26A5E4" style="margin-right:7px;vertical-align:middle;flex-shrink:0;"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>`;
+const MULLVAD_SVG   = `<img src="data:image/png;base64,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" width="14" height="14" style="margin-right:5px;vertical-align:middle;flex-shrink:0;border-radius:50%;object-fit:cover;object-position:center;">`;
+const APP_ICONS     = { gmail:GMAIL_SVG, discord:DISCORD_SVG, instagram:INSTAGRAM_SVG, tiktok:TIKTOK_SVG, twitter:TWITTER_SVG, snapchat:SNAPCHAT_SVG, youtube:YOUTUBE_SVG, twitch:TWITCH_SVG, reddit:REDDIT_SVG, steam:STEAM_SVG, spotify:SPOTIFY_SVG, telegram:TELEGRAM_SVG, mullvad:MULLVAD_SVG, other:OTHER_ICON };
 
 let selectedApps = [];
 let activeAppTab = null;
@@ -707,28 +782,46 @@ function renderAppTabs() {
 
 // Username-Feld ein-/ausblenden
 function toggleUsernameField() {
-  const app = document.getElementById('v-app').value;
-  const ug  = document.getElementById('v-user-group');
-  if (!ug) return;
-  ug.style.display = (app !== 'gmail') ? 'flex' : 'none';
+  const app        = document.getElementById('v-app').value;
+  const isMullvad  = app === 'mullvad';
+  const noUsername = ['gmail', 'Email', 'email', 'mullvad'];
+
+  const ug = document.getElementById('v-user-group');
+  const eg = document.getElementById('v-email-group');
+  const ag = document.getElementById('v-acct-group');
+  const pg = document.getElementById('v-pass-group');
+
+  if (ug) ug.style.display = noUsername.includes(app) ? 'none' : 'flex';
+  if (eg) eg.style.display = isMullvad ? 'none' : 'flex';
+  if (ag) ag.style.display = isMullvad ? 'flex' : 'none';
+  if (pg) pg.style.display = isMullvad ? 'none' : 'flex';
 }
 
 async function addVault() {
-  const app   = document.getElementById('v-app').value;
-  const email = document.getElementById('v-email').value.trim();
-  const pass  = document.getElementById('v-pass').value.trim();
+  const app       = document.getElementById('v-app').value;
+  const isMullvad = app === 'mullvad';
+  const email     = isMullvad
+    ? (document.getElementById('v-acct')?.value.trim() || '')
+    : document.getElementById('v-email').value.trim();
+  const pass  = isMullvad ? '' : document.getElementById('v-pass').value.trim();
   const note  = document.getElementById('v-note').value.trim();
-  const user  = document.getElementById('v-user')?.value.trim() || '';
+  const user  = isMullvad ? '' : (document.getElementById('v-user')?.value.trim() || '');
 
-  if (!email || !pass) { showToast('Email and password required!'); return; }
-  if (app !== 'gmail' && !user) { showToast('Username required for ' + APP_LABELS[app] + '!'); return; }
+  if (isMullvad) {
+    if (!email) { showToast('Account Number is required!'); return; }
+  } else {
+    if (!email || !pass) { showToast('Email and password required!'); return; }
+    const noUsername = ['gmail', 'Email', 'email', 'spotify', 'steam', 'youtube'];
+    if (!noUsername.includes(app) && !user) { showToast('Username required for ' + APP_LABELS[app] + '!'); return; }
+  }
 
   const added = new Date().toLocaleDateString('de-DE') + ' ' + new Date().toLocaleTimeString('de-DE');
   state.vault.push({ app, email, pass, note, user, added });
   await window.store.set('gm_vault', state.vault);
 
-  document.getElementById('v-email').value = '';
-  document.getElementById('v-pass').value  = '';
+  if (document.getElementById('v-email')) document.getElementById('v-email').value = '';
+  if (document.getElementById('v-acct'))  document.getElementById('v-acct').value  = '';
+  if (document.getElementById('v-pass'))  document.getElementById('v-pass').value  = '';
   document.getElementById('v-note').value  = '';
   if (document.getElementById('v-user')) document.getElementById('v-user').value = '';
 
@@ -768,9 +861,12 @@ function renderVault() {
 
   box.innerHTML = '';
   items.forEach(item => {
-    const isGmail = item.app === 'gmail';
-    const displayMain = (isGmail || !item.user) ? maskEmail(item.email) : item.user;
-    const emailLine = (!isGmail && item.user)
+    const isGmail   = item.app === 'gmail';
+    const isMullvad = item.app === 'mullvad';
+    const displayMain = isMullvad
+      ? maskAccountNum(item.email)
+      : (isGmail || !item.user) ? maskEmail(item.email) : item.user;
+    const emailLine = (!isGmail && !isMullvad && item.user)
       ? `<span class="email-masked">${maskEmail(item.email)}</span> &nbsp;·&nbsp; `
       : '';
     const notePart = item.note ? `${item.note} &nbsp;·&nbsp; ` : '';
@@ -798,22 +894,27 @@ async function deleteVault(idx) {
 }
 
 // ── Modal (Bottom Sheet) ──────────────────────────────────────────────────────
-function openModal(idx) {
+function openModal(idx, editMode) {
   const item = state.vault[idx];
   if (!item) return;
   const old = document.querySelector('.modal-overlay');
   if (old) old.remove();
 
   const isGmail      = item.app === 'gmail';
-  const passDisplay  = '•'.repeat(item.pass.length);
+  const isMullvad    = item.app === 'mullvad';
+  const passDisplay  = item.pass ? '•'.repeat(item.pass.length) : '';
   const emailDisplay = maskEmail(item.email);
-  const badgeText    = (isGmail || !item.user) ? maskEmail(item.email) : item.user;
+  const badgeText    = isMullvad
+    ? maskAccountNum(item.email)
+    : (isGmail || !item.user) ? maskEmail(item.email) : item.user;
 
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
 
-  overlay.innerHTML = `
+  if (!editMode) {
+    // ── View Mode ──
+    overlay.innerHTML = `
     <div class="modal-box">
       <div class="modal-app-label">${(item.app || 'account').toUpperCase()} ACCOUNT</div>
 
@@ -825,6 +926,15 @@ function openModal(idx) {
         ${isGmail ? '<span style="font-size:10px;color:var(--text-muted);margin-left:8px;font-family:var(--mono);">&#128065; Tippen</span>' : ''}
       </div>
 
+      ${isMullvad ? `
+      <div class="modal-field">
+        <div class="modal-field-label">ACCOUNT NUMBER</div>
+        <div class="modal-field-row">
+          <div class="modal-field-value" id="modal-email-val">${maskAccountNum(item.email)}</div>
+          <button class="btn btn-ghost btn-sm" id="modal-email-toggle" onclick="toggleModalEmail('${item.email}')">Show</button>
+          <button class="btn btn-ghost btn-sm" id="modal-email-copy" onclick="copyText('${item.email}');this.textContent='✓'" style="display:none;">Copy</button>
+        </div>
+      </div>` : `
       <div class="modal-field">
         <div class="modal-field-label">EMAIL</div>
         <div class="modal-field-row">
@@ -841,7 +951,7 @@ function openModal(idx) {
           <button class="btn btn-ghost btn-sm" id="modal-pass-toggle" onclick="toggleModalPass('${item.pass}')">Show</button>
           <button class="btn btn-ghost btn-sm" onclick="copyText('${item.pass}');this.textContent='✓'">Copy</button>
         </div>
-      </div>
+      </div>`}
 
       ${item.user ? `
       <div class="modal-field">
@@ -853,10 +963,87 @@ function openModal(idx) {
       </div>` : ''}
 
       ${item.note ? `<div class="modal-note">${item.note}</div>` : ''}
-      <button class="modal-close-btn" onclick="closeModal()">Schlie&szlig;en</button>
+
+      <div class="modal-edit-actions">
+        <button class="btn btn-edit btn-sm" style="flex:1;" onclick="openModal(${idx}, true)">&#9998; Edit</button>
+      </div>
     </div>`;
+  } else {
+    // ── Edit Mode ──
+    overlay.innerHTML = `
+    <div class="modal-box">
+      <div class="modal-app-label">EDIT ${(item.app || 'account').toUpperCase()} ACCOUNT</div>
+
+      ${isMullvad ? `
+      <div class="modal-field">
+        <div class="modal-field-label">ACCOUNT NUMBER</div>
+        <div class="modal-field-row">
+          <input class="modal-field-input" id="edit-email" type="text" value="${item.email}" placeholder="1234 5678 9012 3456" autocomplete="off" style="font-family:var(--mono);letter-spacing:0.05em;"/>
+        </div>
+      </div>` : `
+      <div class="modal-field">
+        <div class="modal-field-label">EMAIL</div>
+        <div class="modal-field-row">
+          <input class="modal-field-input" id="edit-email" type="text" value="${item.email}" autocomplete="off"/>
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <div class="modal-field-label">PASSWORD</div>
+        <div class="modal-field-row">
+          <input class="modal-field-input" id="edit-pass" type="text" value="${item.pass}" autocomplete="off"/>
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <div class="modal-field-label">USERNAME</div>
+        <div class="modal-field-row">
+          <input class="modal-field-input" id="edit-user" type="text" value="${item.user || ''}" placeholder="@username" autocomplete="off"/>
+        </div>
+      </div>`}
+
+      <div class="modal-field">
+        <div class="modal-field-label">NOTE</div>
+        <div class="modal-field-row">
+          <input class="modal-field-input" id="edit-note" type="text" value="${item.note || ''}" placeholder="Optional note..." autocomplete="off"/>
+        </div>
+      </div>
+
+      <div class="modal-edit-actions">
+        <button class="btn btn-cancel btn-sm" style="flex:1;" onclick="openModal(${idx}, false)">Cancel</button>
+        <button class="btn btn-save btn-sm" style="flex:2;" onclick="saveVaultEdit(${idx})">&#10003; Save</button>
+      </div>
+    </div>`;
+  }
 
   document.body.appendChild(overlay);
+}
+
+async function saveVaultEdit(idx) {
+  const email = document.getElementById('edit-email')?.value.trim();
+  const pass  = document.getElementById('edit-pass')?.value.trim();
+  const user  = document.getElementById('edit-user')?.value.trim();
+  const note  = document.getElementById('edit-note')?.value.trim();
+
+  const isMullvadEdit = state.vault[idx]?.app === 'mullvad';
+  if (isMullvadEdit) {
+    if (!email) { showToast('✗ Account Number is required.'); return; }
+  } else {
+    if (!email || !pass) { showToast('✗ Email and password are required.'); return; }
+  }
+
+  state.vault[idx] = {
+    ...state.vault[idx],
+    email,
+    pass: isMullvadEdit ? '' : pass,
+    user: isMullvadEdit ? '' : (user || ''),
+    note: note || '',
+  };
+
+  await window.store.set('gm_vault', state.vault);
+  renderVault();
+  openModal(idx, false);
+  showToast('✓ Saved!');
 }
 
 function toggleModalBadge(email) {
