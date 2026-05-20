@@ -1046,10 +1046,16 @@ function openModal(idx, editMode) {
 
   box.addEventListener('touchend', (e) => {
     const dy = e.changedTouches[0].clientY - startY;
-    box.style.transition = 'transform .22s cubic-bezier(.4,0,.2,1)';
     if (dragging && dy > 90) {
-      closeModal();
+      // Animate out from current position — no jump to top
+      box.style.transition = 'transform .22s cubic-bezier(.4,0,.2,1)';
+      overlay.style.transition = 'opacity .22s ease';
+      box.style.transform = `translate3d(0,110vh,0)`;
+      overlay.style.opacity = '0';
+      document.body.style.overflow = '';
+      setTimeout(() => overlay.remove(), 230);
     } else {
+      box.style.transition = 'transform .22s cubic-bezier(.4,0,.2,1)';
       box.style.transform = 'translate3d(0,0,0)';
       overlay.style.background = '';
     }
