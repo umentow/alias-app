@@ -598,9 +598,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     const el = document.querySelector(`.app-pick-item[data-app="${app}"]`);
     if (el) el.classList.add('selected');
   });
-  // Normalize legacy 'email' type → 'gmail' and deduplicate
+  // Normalize legacy 'email' type → 'gmail' and deduplicate, then persist
   selectedApps = [...new Set(selectedApps.map(a => a === 'email' ? 'gmail' : a))];
   state.vault.forEach(v => { if (v.app === 'email') v.app = 'gmail'; });
+  await window.store.set('gm_selected_apps', selectedApps);
+  await window.store.set('gm_vault', state.vault);
   if (selectedApps.length) activeAppTab = activeAppTab || selectedApps[0];
 
   renderAppTabs();
